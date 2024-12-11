@@ -134,9 +134,9 @@ const Quaternion Quaternion::FromToRotation(const Vector3& from, const Vector3& 
 	}
 	// from == -toの場合
 	else if (cos < -1 + PERMISSIBLE) {
-		Vector3 orthogonal = CVector3::BASIS_X;
-		if (std::abs(from.x) > 1 - PERMISSIBLE) {
-			orthogonal = CVector3::BASIS_Y;
+		Vector3 orthogonal = CVector3::BASIS_Z;
+		if (std::abs(from.z) > 1 - PERMISSIBLE) {
+			orthogonal = CVector3::BASIS_X;
 		}
 		Vector3 axis = Vector3::CrossProduct(from, orthogonal).normalize();
 		return Quaternion{ axis, 0 };
