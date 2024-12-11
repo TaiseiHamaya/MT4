@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char preKeys[256] = {0};
 
 	Quaternion from = Quaternion::AngleAxis({ 0.71f, 0.71f, 0.0f }, 0.3f);
-	Quaternion to = Quaternion::AngleAxis({ 0.71f, 0.0f, 0.71f }, 3.14f);
+	Quaternion to = { -from.vector(), -from.real() };
 
 	Quaternion interpolate0 = Quaternion::Slerp(from, to, 0.0f);
 	Quaternion interpolate1 = Quaternion::Slerp(from, to, 0.3f);
