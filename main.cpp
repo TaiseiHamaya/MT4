@@ -15,6 +15,12 @@ void PrintMatrix4x4(int x, int y, const Matrix4x4& matrix) {
 	}
 }
 
+
+void PrintQuaternion(int x, int y, const Quaternion& quat) {
+	const Vector3& vec = quat.vector();
+	Novice::ScreenPrintf(x, y, "%4.3f %4.3f %4.3f %4.3f", vec.x, vec.y, vec.z, quat.real());
+}
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -25,17 +31,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Quaternion quaternion0 = Quaternion::FromToRotation(CVector3::BASIS_X, -CVector3::BASIS_X);
-	Vector3 from1 = Vector3{ 1.0f, 0.7f, 0.5f }.normalize();
-	Vector3 to1 = -from1;
-	Quaternion quaternion1 = Quaternion::FromToRotation(from1, to1);
-	Vector3 from2 = Vector3{ -0.6f, 0.9f, 0.2f }.normalize();
-	Vector3 to2 = Vector3{ 0.4f, 0.7f, -0.5f }.normalize();
-	Quaternion quaternion2 = Quaternion::FromToRotation(from2, to2);
+	Quaternion quat1{ 2.0f, 3.0f, 4.0f, 1.0f };
+	Quaternion quat2{ 1.0f, 3.0f, 5.0f, 2.0f };
 
-	Matrix4x4 fromToMatrix0 = quaternion0.to_matrix();
-	Matrix4x4 fromToMatrix1 = quaternion1.to_matrix();
-	Matrix4x4 fromToMatrix2 = quaternion2.to_matrix();
+	Quaternion identity = CQuaternion::IDENTITY;
+	Quaternion conj = quat1.conjugate();
+	Quaternion inverse = quat1.inverse();
+	Quaternion normalize = quat1.normalize();
+	Quaternion mul1 = quat1 * quat2;
+	Quaternion mul2 = quat2 * quat1;
+	float norm = quat1.norm();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -58,9 +63,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		PrintMatrix4x4(0, 0, fromToMatrix0);
-		PrintMatrix4x4(0, kRowHeight * 5, fromToMatrix1);
-		PrintMatrix4x4(0, kRowHeight * 10, fromToMatrix2);
+		PrintQuaternion(0, 0, identity);
+		PrintQuaternion(0, 20, conj);
+		PrintQuaternion(0, 40, inverse);
+		PrintQuaternion(0, 60, normalize);
+		PrintQuaternion(0, 80, mul1);
+		PrintQuaternion(0, 100, mul2);
+		Novice::ScreenPrintf(0, 120, "%4.3f", norm);
 
 		///
 		/// ↑描画処理ここまで

@@ -89,16 +89,14 @@ public: // メンバ関数
 	const Matrix4x4 to_matrix() const noexcept;
 
 	/// <summary>
-	/// Quaternionベクトルの長さ[1]
-	/// </summary>
-	/// <returns>基本は1</returns>
-	const float length() const noexcept;
-
-	/// <summary>
 	/// 逆クォータニオンの取得
 	/// </summary>
 	/// <returns>逆Quaternion</returns>
 	const Quaternion inverse() const noexcept;
+
+	const Quaternion conjugate() const noexcept;
+
+	const float norm() const noexcept;
 
 	/// <summary>
 	/// クォータニオンの正規化

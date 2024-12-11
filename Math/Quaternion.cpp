@@ -104,17 +104,25 @@ const Matrix4x4 Quaternion::to_matrix() const noexcept {
 	};
 }
 
-const float Quaternion::length() const noexcept {
+const Quaternion Quaternion::inverse() const noexcept {
+	float norm_ = norm();
+	if (norm_ == 0) {
+		return CQuaternion::IDENTITY;
+	}
+	return conjugate() * (1 / (norm_ * norm_));
+}
+
+const Quaternion Quaternion::conjugate() const noexcept {
+	return { -xyz, w };
+}
+
+const float Quaternion::norm() const noexcept {
 	Vector3 v2 = Vector3::Multiply(xyz, xyz);
 	return std::sqrt(v2.x + v2.y + v2.z + w * w);
 }
 
-const Quaternion Quaternion::inverse() const noexcept {
-	return { -xyz.x, -xyz.y, -xyz.z, w };
-}
-
 const Quaternion Quaternion::normalize() const noexcept {
-	return *this * (1 / length());
+	return *this * (1 / norm());
 }
 
 const Vector3& Quaternion::vector() const noexcept {
