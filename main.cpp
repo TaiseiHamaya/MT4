@@ -21,6 +21,15 @@ void PrintQuaternion(int x, int y, const Quaternion& quat) {
 	Novice::ScreenPrintf(x, y, "%4.3f %4.3f %4.3f %4.3f", vec.x, vec.y, vec.z, quat.real());
 }
 
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	float w = vector.x * matrix[0][3] + vector.y * matrix[1][3] + vector.z * matrix[2][3] + 1.0f * matrix[3][3];
+	return {
+		(vector.x * matrix[0][0] + vector.y * matrix[1][0] + vector.z * matrix[2][0] + 1.0f * matrix[3][0]) / w,
+		(vector.x * matrix[0][1] + vector.y * matrix[1][1] + vector.z * matrix[2][1] + 1.0f * matrix[3][1]) / w,
+		(vector.x * matrix[0][2] + vector.y * matrix[1][2] + vector.z * matrix[2][2] + 1.0f * matrix[3][2]) / w
+	};
+}
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -31,16 +40,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Quaternion quat1{ 2.0f, 3.0f, 4.0f, 1.0f };
-	Quaternion quat2{ 1.0f, 3.0f, 5.0f, 2.0f };
-
-	Quaternion identity = CQuaternion::IDENTITY;
-	Quaternion conj = quat1.conjugate();
-	Quaternion inverse = quat1.inverse();
-	Quaternion normalize = quat1.normalize();
-	Quaternion mul1 = quat1 * quat2;
-	Quaternion mul2 = quat2 * quat1;
-	float norm = quat1.norm();
+	Quaternion rotation = Quaternion::AngleAxis({ 1.0f, 0.4f, -0.2f }, 0.45f);
+	Vector3 point{ 2.1f, -0.9f, 1.3f };
+	Matrix4x4 rotateMatrix = rotation.to_matrix();
+	Vector3 rotateByQuaternion = point * rotation;
+	Vector3 rotateByMatrix = Transform(point, rotateMatrix);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -63,13 +67,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		PrintQuaternion(0, 0, identity);
-		PrintQuaternion(0, 20, conj);
-		PrintQuaternion(0, 40, inverse);
-		PrintQuaternion(0, 60, normalize);
-		PrintQuaternion(0, 80, mul1);
-		PrintQuaternion(0, 100, mul2);
-		Novice::ScreenPrintf(0, 120, "%4.3f", norm);
+		PrintQuaternion(0, 0, rotation);
+		PrintMatrix4x4(0, 20, rotateMatrix);
+		Novice::ScreenPrintf(0, 100, "%4.2f %4.2f %4.2f", rotateByQuaternion.x, rotateByQuaternion.y, rotateByQuaternion.z);
+		Novice::ScreenPrintf(0, 120, "%4.2f %4.2f %4.2f", rotateByMatrix.x, rotateByMatrix.y, rotateByMatrix.z);
 
 		///
 		/// ↑描画処理ここまで
